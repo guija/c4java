@@ -4,10 +4,26 @@ import com.github.guija.c4java.model.Component;
 import com.github.guija.c4java.model.Project;
 import com.github.guija.c4java.model.Sys;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.val;
+import lombok.var;
+
+import java.net.URI;
 
 @RequiredArgsConstructor
 public class DotBuilder {
+
+  private String prependHeader(Project project, String dot) {
+    return "digraph {\n" + dot;
+  }
+
+  private String appendFooter(Project project, String dot) {
+    return dot + "}\n";
+  }
+
+  private String addHeaderAndFooter(Project project, String dot) {
+    return prependHeader(project, appendFooter(project, dot));
+  }
 
   public String generateSystemViewDot(Project project) {
     val viewType = Component.Type.SYSTEM;
@@ -18,6 +34,8 @@ public class DotBuilder {
         dot = addEdge(dot, system, targetSystem);
       }
     }
+    dot = addHeaderAndFooter(project, dot);
+    printDotPreviewLink(dot);
     return dot;
   }
 
@@ -35,6 +53,8 @@ public class DotBuilder {
         }
       }
     }
+    dot = addHeaderAndFooter(project, dot);
+    printDotPreviewLink(dot);
     return dot;
   }
 
@@ -42,6 +62,16 @@ public class DotBuilder {
     String newDot = new String(dot);
     newDot += String.format("%s -> %s\n", from.getId(), to.getId());
     return newDot;
+  }
+
+  @SneakyThrows
+  public void printDotPreviewLink(String input) {
+    var uri = new URI(
+      "https",
+      "dreampuf.github.io",
+      "/GraphvizOnline/#" + input,
+      null);
+    System.out.println(uri.toURL().toString().replace("/%23", "#"));
   }
 
 }
