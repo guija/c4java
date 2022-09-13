@@ -11,6 +11,11 @@ public class Sys extends Component {
     this(name, false);
   }
 
+  @Override
+  public String getTypeDescription() {
+    return "Software System";
+  }
+
   public Sys(String name, boolean external) {
     super(name);
     this.external = external;

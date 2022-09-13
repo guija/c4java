@@ -7,6 +7,11 @@ public class User extends Component {
   }
 
   @Override
+  public String getTypeDescription() {
+    return "User";
+  }
+
+  @Override
   public Type getType() {
     return Type.USER;
   }

@@ -7,6 +7,11 @@ public class Container extends Component {
   }
 
   @Override
+  public String getTypeDescription() {
+    return "Container";
+  }
+
+  @Override
   public Type getType() {
     return Type.CONTAINER;
   }

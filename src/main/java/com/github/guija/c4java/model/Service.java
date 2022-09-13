@@ -7,6 +7,11 @@ public class Service extends Component {
   }
 
   @Override
+  public String getTypeDescription() {
+    return "Service";
+  }
+
+  @Override
   public Type getType() {
     return Type.SERVICE;
   }

@@ -1,67 +1,118 @@
 package com.github.guija.c4java.builder;
 
 import com.github.guija.c4java.model.Component;
+import com.github.guija.c4java.model.ExternalSystem;
 import com.github.guija.c4java.model.Project;
 import com.github.guija.c4java.model.Sys;
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
 import lombok.var;
 
+import java.io.File;
 import java.net.URI;
+import java.util.HashSet;
 
 @RequiredArgsConstructor
 public class DotBuilder {
 
-  private String prependHeader(Project project, String dot) {
-    return "digraph {\n" + dot;
+  private final Project project;
+  private HashSet<Component> alreadyRegisteredNodes = new HashSet<>();
+  private String dot = "";
+
+  @SneakyThrows
+  public void createFile(String fileName) {
+    val graphviz = Graphviz.fromString(dot);
+    // graphviz.render(Format.PNG).toFile(new File(fileName));
+    graphviz.render(Format.SVG).toFile(new File("plain.svg"));
   }
 
-  private String appendFooter(Project project, String dot) {
-    return dot + "}\n";
+  private void prependHeader() {
+    this.dot = "digraph {\n" + dot;
   }
 
-  private String addHeaderAndFooter(Project project, String dot) {
-    return prependHeader(project, appendFooter(project, dot));
+  private void appendFooter() {
+    dot = dot + "}\n"; // end of digraph
+  }
+
+  private void addHeaderAndFooter() {
+    prependHeader();
+    appendFooter();
   }
 
   public String generateSystemViewDot(Project project) {
     val viewType = Component.Type.SYSTEM;
-    String dot = "";
     for (val system : project.getSystems()) {
+      registerNode(system);
       for (val used : system.getUses()) {
         val targetSystem = used.getAncestorWithType(viewType);
-        dot = addEdge(dot, system, targetSystem);
+        addEdge(system, targetSystem);
       }
     }
-    dot = addHeaderAndFooter(project, dot);
+    addHeaderAndFooter();
     printDotPreviewLink(dot);
     return dot;
   }
 
   public String generateContainerViewDot(Project project, Sys system) {
-    // Gehe ueber System und Container und finde alle anderen Systeme oder container die diese Systeme / Container verwenden.
-    String dot = "";
     for (val container : system.getComponents()) {
+      registerNode(container);
       for (val used : container.getUses()) {
         // If the used component is from another system then we want to reference the other system, not the container of that system.
         val usedSystem = used.getAncestorWithType(Component.Type.SYSTEM);
         if (usedSystem != system) {
-          dot = addEdge(dot, container, usedSystem);
+          addEdge(container, usedSystem);
         } else {
-          dot = addEdge(dot, container, used);
+          addEdge(container, used);
         }
       }
     }
-    dot = addHeaderAndFooter(project, dot);
+    addHeaderAndFooter();
     printDotPreviewLink(dot);
     return dot;
   }
 
-  private String addEdge(String dot, Component from, Component to) {
-    String newDot = new String(dot);
-    newDot += String.format("%s -> %s\n", from.getId(), to.getId());
-    return newDot;
+  private void addEdge(Component from, Component to) {
+    registerNode(from);
+    registerNode(to);
+    dot += String.format("%s -> %s\n", from.getId(), to.getId());
+  }
+
+  private void registerNode(Component component) {
+    if (!alreadyRegisteredNodes.contains(component)) {
+      alreadyRegisteredNodes.add(component);
+      val id = component.getId();
+      val description = "This is a very very very<BR/>very long description";
+      dot += String.format("%s [label=<<B>%s</B><BR/>[%s]<BR/><BR/>%s> shape=box fontname=Helvetica fontsize=12 margin=\"0.3,0.1\" fillcolor=\"#%s\" color=\"#%s\" fontcolor=white style=filled]\n",
+        id,
+        id,
+        component.getTypeDescription(),
+        description,
+        getBackgroundColor(component),
+        getBorderColor(component));
+    }
+  }
+
+  private String getBorderColor(Component component) {
+    if (component instanceof ExternalSystem) {
+      return "8A8A8A";
+    } else if (component instanceof Sys) {
+      return "0F5EAA";
+    } else {
+      return "3C7FC0";
+    }
+  }
+
+  private String getBackgroundColor(Component component) {
+    if (component instanceof ExternalSystem) {
+      return "999999";
+    } else if (component instanceof Sys) {
+      return "1168BD";
+    } else {
+      return "438DD5";
+    }
   }
 
   @SneakyThrows

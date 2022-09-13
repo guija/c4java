@@ -1,6 +1,7 @@
 package com.github.guija.c4java.model;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.val;
 
@@ -22,6 +23,8 @@ public abstract class Component {
   public Component(String name) {
     this.name = name;
   }
+
+  public abstract String getTypeDescription();
 
   public void uses(Component component) {
     uses.add(component);
@@ -64,11 +67,17 @@ public abstract class Component {
 
   public abstract Type getType();
 
+  @RequiredArgsConstructor
+  @Getter
   public enum Type {
-    CONTAINER,
-    SYSTEM,
-    USER,
-    SERVICE
+
+    CONTAINER("Container"),
+    SYSTEM("Software System"),
+    USER("User"),
+    SERVICE("Service");
+
+    private final String description;
+
   }
 
 }
