@@ -1,6 +1,7 @@
 package com.github.guija.c4java.model;
 
 import lombok.Getter;
+import lombok.ToString;
 import lombok.val;
 
 import java.util.ArrayDeque;
@@ -8,8 +9,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Getter
+@ToString(onlyExplicitlyIncluded = true)
 public abstract class Component {
 
+  @ToString.Include
   private final String name;
   private Set<Component> uses = new HashSet<>();
   private Set<Component> usedBy = new HashSet<>();
@@ -25,10 +28,12 @@ public abstract class Component {
     component.usedBy.add(this);
   }
 
-  public void add(Component component) {
-    assert parent == null : "Component already has a parent. Cannot be reassigned";
-    components.add(component);
-    component.parent = this;
+  public void add(Component... components) {
+    for (val component : components) {
+      assert component.parent == null : "Component already has a parent. Cannot be reassigned";
+      this.components.add(component);
+      component.parent = this;
+    }
   }
 
   public Set<Component> getAllChildComponentsWithRoot() {
