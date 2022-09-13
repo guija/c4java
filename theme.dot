@@ -1,0 +1,41 @@
+digraph {
+    
+    splines=spline
+    fontname=Helvetica
+    fontsize=12
+
+    // system bg: 1168BD
+    // system border: 0F5EAA
+    A [label=<<B>System A</B><BR/>[Software System]<BR/><BR/>This is a very very very<BR/>very long description> shape=box fontname=Helvetica fontsize=12 margin="0.3,0.1" fillcolor="#1168BD" color="#0F5EAA" fontcolor=white style=filled]
+
+    // container bg: 438DD5
+    // container border: 3C7FC0
+    
+    B [label=<<B>Container B</B><BR/>This is a very very very<BR/>very long description> shape=box fontname=Helvetica fontsize=12 margin="0.3,0.1" fillcolor="#438DD5" color="#3C7FC0" fontcolor=white style=filled]
+    C [label=<<B>Container C</B><BR/>This is a very very very<BR/>very long description> shape=box fontname=Helvetica fontsize=12 margin="0.3,0.1" fillcolor="#438DD5" color="#3C7FC0" fontcolor=white style=filled]
+
+    // Database
+
+    D [label=<<B>Database D</B><BR/>This is a very very very<BR/>very long description> shape=cylinder fontname=Helvetica fontsize=12 margin="0.3,0.1" fillcolor="#438DD5" color="#3C7FC0" fontcolor=white style=filled]
+
+    // Queue / Topic
+
+    E [label=<<B>PSDH D</B><BR/>PSDH Master Data Topics> shape=cds fontname=Helvetica fontsize=12 margin="0.3,0.2" fillcolor="#438DD5" color="#2e69a3" fontcolor=white style=filled]
+    
+    // External System
+    F [label=<<B>External System F</B><BR/>This is a very very very<BR/>very long description> shape=box fontname=Helvetica fontsize=12 margin="0.3,0.1" fillcolor="#999999" color="#8A8A8A" fontcolor=white style=filled]
+
+
+    // sync label
+    A -> B [label=Description fontname=Helvetica]
+    B -> C [label=Description fontname=Helvetica]
+    A -> C [label=Description fontname=Helvetica]
+    C -> A
+
+    // async (style=dashed)
+    C -> D [xlabel=Description fontname=Helvetica style=dashed]
+
+    A -> E
+    A -> F
+
+}
