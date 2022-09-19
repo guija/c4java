@@ -52,7 +52,7 @@ public abstract class Component {
   }
 
   public String getId() {
-    return name;
+    return name.replace(" ", "_");
   }
 
   public Component getAncestorWithType(Type type) {

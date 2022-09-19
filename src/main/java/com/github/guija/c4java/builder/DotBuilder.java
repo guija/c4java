@@ -26,7 +26,7 @@ public class DotBuilder {
   public void createFile(String fileName) {
     val graphviz = Graphviz.fromString(dot);
     // graphviz.render(Format.PNG).toFile(new File(fileName));
-    graphviz.render(Format.SVG).toFile(new File("plain.svg"));
+    graphviz.render(Format.SVG).toFile(new File(fileName));
   }
 
   private void prependHeader() {
@@ -46,9 +46,19 @@ public class DotBuilder {
     val viewType = Component.Type.SYSTEM;
     for (val system : project.getSystems()) {
       registerNode(system);
-      for (val used : system.getUses()) {
-        val targetSystem = used.getAncestorWithType(viewType);
-        addEdge(system, targetSystem);
+      val childComponents = system.getAllChildComponentsWithRoot();
+      for (val child : childComponents) {
+        for (val used : child.getUses()) {
+          val targetSystem = used.getAncestorWithType(viewType);
+          // Do not add edge if the system is the same. If you want to see edges within a system
+          // the container view is the correct view, not the system view. Otherwise we would have many
+          // edges from a system to itself.
+          val isTargetSystemTheSameSystem = targetSystem == system;
+          if (isTargetSystemTheSameSystem) {
+            continue;
+          }
+          addEdge(system, targetSystem);
+        }
       }
     }
     addHeaderAndFooter();
@@ -77,7 +87,7 @@ public class DotBuilder {
   private void addEdge(Component from, Component to) {
     registerNode(from);
     registerNode(to);
-    dot += String.format("%s -> %s\n", from.getId(), to.getId());
+    dot += String.format("\"%s\" -> \"%s\"\n", from.getId(), to.getId());
   }
 
   private void registerNode(Component component) {
