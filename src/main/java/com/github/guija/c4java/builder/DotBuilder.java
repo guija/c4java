@@ -85,7 +85,7 @@ public class DotBuilder {
       alreadyRegisteredNodes.add(component);
       val id = component.getId();
       val description = "This is a very very very<BR/>very long description";
-      dot += String.format("%s [label=<<B>%s</B><BR/>[%s]<BR/><BR/>%s> shape=box fontname=Helvetica fontsize=12 margin=\"0.3,0.1\" fillcolor=\"#%s\" color=\"#%s\" fontcolor=white style=filled]\n",
+      dot += String.format("\"%s\" [label=<<B>%s</B><BR/>[%s]<BR/><BR/>%s> shape=box fontname=Helvetica fontsize=12 margin=\"0.3,0.1\" fillcolor=\"#%s\" color=\"#%s\" fontcolor=white style=filled]\n",
         id,
         id,
         component.getTypeDescription(),
