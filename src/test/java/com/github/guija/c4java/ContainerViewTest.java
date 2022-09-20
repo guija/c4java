@@ -18,7 +18,7 @@ public class ContainerViewTest {
     val container1 = new Container("1");
     val container2 = new Container("2");
     systemA.add(container1, container2);
-    container1.uses(container2);
+    container1.uses(container2, "TODO");
     val project = new Project();
     project.getSystems().add(systemA);
     val dotBuilder = new DotBuilder(project);
@@ -38,9 +38,9 @@ public class ContainerViewTest {
     val container4 = new Container("4");
     systemA.add(container1, container2);
     systemB.add(container3, container4);
-    container3.uses(container1);
-    container3.uses(container4);
-    container2.uses(container4);
+    container3.uses(container1, "TODO");
+    container3.uses(container4, "TODO");
+    container2.uses(container4, "TODO");
     val project = new Project();
     project.getSystems().add(systemA);
     project.getSystems().add(systemB);
@@ -57,7 +57,7 @@ public class ContainerViewTest {
     val systemB = new ExternalSystem("B");
     val container = new Container("Container");
     systemA.add(container);
-    container.uses(systemB);
+    container.uses(systemB, "TODO");
     val project = new Project();
     project.getSystems().add(systemA);
     project.getSystems().add(systemB);

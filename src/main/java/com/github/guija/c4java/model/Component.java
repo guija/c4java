@@ -15,8 +15,8 @@ public abstract class Component {
 
   @ToString.Include
   private final String name;
-  private Set<Component> uses = new HashSet<>();
-  private Set<Component> usedBy = new HashSet<>();
+  private Set<UsesRelation> usesRelations = new HashSet<>();
+  private Set<UsesRelation> usedBy = new HashSet<>();
   private Set<Component> components = new HashSet<>();
   private Component parent;
 
@@ -26,9 +26,18 @@ public abstract class Component {
 
   public abstract String getTypeDescription();
 
-  public void uses(Component component) {
-    uses.add(component);
-    component.usedBy.add(this);
+  public void uses(Component component, String comment) {
+    uses(component, comment, false);
+  }
+
+  public void usesAsync(Component component, String comment) {
+    uses(component, comment, true);
+  }
+
+  public void uses(Component component, String comment, boolean isAsync) {
+    val usesRelation = new UsesRelation(this, component, comment, isAsync);
+    usesRelations.add(usesRelation);
+    component.usedBy.add(usesRelation);
   }
 
   public void add(Component... components) {

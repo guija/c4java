@@ -15,3 +15,6 @@ Further documentation will be added.
 - Write tests:
     - There is an edge between two systems if a container within the system calls a container within another system
     - There are no edges in the system view from system A to system A (self references are not helpful).
+- style tests for edges / nodes
+- add tests for async / sync (dotted vs dashed)
+- test comments on edges are being used as labels
