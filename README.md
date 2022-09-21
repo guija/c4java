@@ -8,8 +8,7 @@ Further documentation will be added.
 
 ## TODO
 
-- container view: external system that uses this system
-
+- Add (also custom) technologies to container
 - Documentation
   - Examples
   - how to integrate (maven etc.)
