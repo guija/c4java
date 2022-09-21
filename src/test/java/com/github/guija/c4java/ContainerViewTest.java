@@ -15,8 +15,8 @@ public class ContainerViewTest {
   @Test
   public void oneSystemWithTwoContainersTest() {
     val systemA = new Sys("A", "A");
-    val container1 = new Container("1", "1");
-    val container2 = new Container("2", "2");
+    val container1 = new Container(systemA, "1", "1");
+    val container2 = new Container(systemA, "2", "2");
     systemA.add(container1, container2);
     container1.uses(container2, "TODO");
     val project = new Project();
@@ -32,12 +32,10 @@ public class ContainerViewTest {
   public void twoSystemsWithContainersReferencingEachOther() {
     val systemA = new Sys("A", "A");
     val systemB = new Sys("B", "B");
-    val container1 = new Container("1", "1");
-    val container2 = new Container("2", "2");
-    val container3 = new Container("3", "3");
-    val container4 = new Container("4", "4");
-    systemA.add(container1, container2);
-    systemB.add(container3, container4);
+    val container1 = new Container(systemA, "1", "1");
+    val container2 = new Container(systemA, "2", "2");
+    val container3 = new Container(systemB, "3", "3");
+    val container4 = new Container(systemB, "4", "4");
     container3.uses(container1, "TODO");
     container3.uses(container4, "TODO");
     container2.uses(container4, "TODO");
@@ -55,8 +53,7 @@ public class ContainerViewTest {
   public void containerUsingExternalSystemTest() {
     val systemA = new Sys("A", "A");
     val systemB = new ExternalSystem("B", "B");
-    val container = new Container("Container", "Container");
-    systemA.add(container);
+    val container = new Container(systemA, "Container", "Container");
     container.uses(systemB, "TODO");
     val project = new Project();
     project.getSystems().add(systemA);

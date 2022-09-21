@@ -16,14 +16,10 @@ public class SystemViewTest {
     val systemA = new Sys("A", "A");
     val systemB = new Sys("B", "B");
     systemA.uses(systemB, "TODO");
-    val container1 = new Container("1", "1");
-    val container2 = new Container("2", "2");
-    val container3 = new Container("3", "3");
-    val container4 = new Container("4", "4");
-    systemA.add(container1);
-    systemA.add(container2);
-    systemB.add(container3);
-    systemB.add(container4);
+    val container1 = new Container(systemA, "1", "1");
+    val container2 = new Container(systemA, "2", "2");
+    val container3 = new Container(systemB, "3", "3");
+    val container4 = new Container(systemB, "4", "4");
     val project = new Project();
     project.add(systemA);
     project.add(systemB);
@@ -36,8 +32,7 @@ public class SystemViewTest {
   public void containerUsesSystemTest() {
     val systemA = new Sys("A", "A");
     val systemB = new Sys("B", "B");
-    val container1 = new Container("1", "1");
-    systemB.add(container1);
+    val container1 = new Container(systemB, "1", "1");
     systemA.uses(container1, "TODO");
     val project = new Project();
     project.getSystems().add(systemA);

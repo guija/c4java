@@ -20,7 +20,7 @@ public abstract class Component {
   private Set<UsesRelation> usesRelations = new HashSet<>();
   private Set<UsesRelation> usedBy = new HashSet<>();
   private Set<Component> components = new HashSet<>();
-  private Component parent;
+  protected Component parent;
 
   public abstract String getTypeDescription();
 
