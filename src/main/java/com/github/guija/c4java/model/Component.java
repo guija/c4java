@@ -32,6 +32,12 @@ public abstract class Component {
     uses(component, comment, true);
   }
 
+  public Set<UsesRelation> getUsedAndUses() {
+    val usedAndUse = new HashSet<>(getUsesRelations());
+    usedAndUse.addAll(getUsedBy());
+    return usedAndUse;
+  }
+
   public void uses(Component component, String comment, boolean isAsync) {
     val usesRelation = new UsesRelation(this, component, comment, isAsync);
     usesRelations.add(usesRelation);

@@ -34,7 +34,8 @@ public class DotBuilder {
     this.dot =
       "digraph {\n"
         + "graph [pad=\"0.5\", nodesep=\"1\", ranksep=\"2\"];\n"
-        + "splines=\"false\";\n"
+        // + "splines=\"false\";\n"
+        // + "splines=ortho;\n"
         + dot;
   }
 
@@ -48,12 +49,16 @@ public class DotBuilder {
   }
 
   public String generateSystemViewDot() {
+
     val viewType = Component.Type.SYSTEM;
+
     for (val system : project.getSystems()) {
+
       registerNode(system);
+
       val childComponents = system.getAllChildComponentsWithRoot();
       for (val child : childComponents) {
-        for (val usesRelation : child.getUsesRelations()) {
+        for (val usesRelation : child.getUsedAndUses()) {
           val targetSystem = usesRelation.getUsed().getAncestorWithType(viewType);
           val comment = usesRelation.getComment();
           // Do not add edge if the system is the same. If you want to see edges within a system
@@ -74,17 +79,28 @@ public class DotBuilder {
 
   public String generateContainerViewDot(Sys system) {
     for (val container : system.getComponents()) {
+
       registerNode(container);
-      for (val usesRelations : container.getUsesRelations()) {
+
+      for (val usesRelations : container.getUsedAndUses()) {
         // If the used component is from another system then we want to reference the other system, not the container of that system.
-        val usedSystem = usesRelations.getUsed().getAncestorWithType(Component.Type.SYSTEM);
+        val user = usesRelations.getUser();
+        val used = usesRelations.getUsed();
+        val userSystem = user.getAncestorWithType(Component.Type.SYSTEM);
+        val usedSystem = used.getAncestorWithType(Component.Type.SYSTEM);
+        val isSameSystem = userSystem == usedSystem;
         val comment = usesRelations.getComment();
-        if (usedSystem != system) {
-          addEdge(container, usedSystem, comment, usesRelations.isAsync());
-        } else {
+        if (isSameSystem) {
           addEdge(container, usesRelations.getUsed(), comment, usesRelations.isAsync());
+        } else {
+          // We want to normalize the systems to that if there is an edge to an external component or from an external component
+          // into this system we always want to show the system not the container for that system.
+          val effectiveUser = userSystem != system ? userSystem : user;
+          val effectiveUsed = usedSystem != system ? usedSystem : used;
+          addEdge(effectiveUser, effectiveUsed, comment, usesRelations.isAsync());
         }
       }
+
     }
     addHeaderAndFooter();
     printDotPreviewLink(dot);
@@ -92,11 +108,15 @@ public class DotBuilder {
   }
 
   private void addEdge(Component from, Component to, String comment, boolean isAsync) {
+    // Avoid self references
+    if (from == to) {
+      return;
+    }
     registerNode(from);
     registerNode(to);
     val edgeStyle = getRelationStyle(isAsync);
     val commentFormatted = TextUtil.splitIntoMultipleLinesMaintainingWordBoundaries(comment, MAX_LINE_LENGTH, "\n");
-    dot += String.format("\"%s\" -> \"%s\" [label=\"%s\" style=%s fontname=Helvetica fontsize=11 color=\"#707070\"]\n", from.getId(), to.getId(), commentFormatted, edgeStyle);
+    dot += String.format("\"%s\" -> \"%s\" [xlabel=\"%s\" style=%s fontname=Helvetica fontsize=11 color=\"#707070\"]\n", from.getId(), to.getId(), commentFormatted, edgeStyle);
   }
 
   private void registerNode(Component component) {

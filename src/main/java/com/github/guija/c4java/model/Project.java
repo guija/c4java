@@ -5,6 +5,7 @@ import lombok.Data;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 public class Project {
@@ -19,6 +20,10 @@ public class Project {
 
   public void addAll(Sys... systems) {
     this.systems.addAll(Arrays.asList(systems));
+  }
+
+  public Set<Component> getComponents() {
+    return systems.stream().flatMap(sys -> sys.getAllChildComponentsWithRoot().stream()).collect(Collectors.toSet());
   }
 
 }

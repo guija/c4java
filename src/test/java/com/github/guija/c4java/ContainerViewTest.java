@@ -8,6 +8,7 @@ import com.github.guija.c4java.model.Sys;
 import lombok.val;
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ContainerViewTest {
@@ -60,6 +61,47 @@ public class ContainerViewTest {
     val dotBuilder = new DotBuilder(project);
     val dot = dotBuilder.generateContainerViewDot(systemA);
     dotBuilder.createFile("twoSystemsWithContainersReferencingEachOther.png");
+  }
+
+  @Test
+  public void internalContainerIsUsedByExternalSystemTest() {
+    val systemInternal = new Sys("InternalSystem", "description");
+    val internalContainer = new Container(systemInternal, "InternalContainer", "description");
+    val externalSystem = new ExternalSystem("ExternalSystem", "description");
+    externalSystem.uses(internalContainer, "usage");
+    val project = new Project();
+    project.addAll(systemInternal, externalSystem);
+    val dotBuilder = new DotBuilder(project);
+    val containerViewDot = dotBuilder.generateContainerViewDot(systemInternal);
+    assertTrue(containerViewDot.contains("\"ExternalSystem\" -> \"InternalContainer\""));
+  }
+
+  @Test
+  public void twoInternalContainersAreCalledByTheSameExternalSystemTest() {
+    // A internal container and an external system are using two other internal containers
+    // There was a bug with self references of the internal containers which we want to avoid.
+    val systemInternal = new Sys("InternalSystem", "description");
+    val internalContainer = new Container(systemInternal, "InternalContainer", "description");
+    val internalContainer2 = new Container(systemInternal, "InternalContainer2", "description");
+    val internalContainer3 = new Container(systemInternal, "InternalContainer3", "description");
+    val externalSystem = new ExternalSystem("ExternalSystem", "description");
+    externalSystem.uses(internalContainer, "usage1");
+    externalSystem.uses(internalContainer2, "usage2");
+    internalContainer3.uses(internalContainer, "usage31");
+    internalContainer3.uses(internalContainer2, "usage32");
+    val project = new Project();
+    project.addAll(systemInternal, externalSystem);
+    val dotBuilder = new DotBuilder(project);
+    val containerViewDot = dotBuilder.generateContainerViewDot(systemInternal);
+    assertTrue(containerViewDot.contains("\"ExternalSystem\" -> \"InternalContainer\""));
+  }
+
+  public void internalContainerIsUsedByOtherContainerTest() {
+    assertFalse("to be implemented", true);
+  }
+
+  public void internalSystemIsUsedByOtherContainerTest() {
+    assertFalse("to be implemented", true);
   }
 
 }

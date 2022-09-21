@@ -8,6 +8,14 @@ Further documentation will be added.
 
 ## TODO
 
+- container view: external system that uses this system
+
+- Documentation
+  - Examples
+  - how to integrate (maven etc.)
+  - Highlight / define architecture as code approach
+  - Reference C4 conceptual model
+- Think about customizations like custom types, custom shapes etc.
 - Insert line breaks in description of components manually.
 - Generate container diagram for every system.
 - Generate system diagram for whole project.
