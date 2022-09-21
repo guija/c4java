@@ -17,7 +17,6 @@ public class ContainerViewTest {
     val systemA = new Sys("A", "A");
     val container1 = new Container(systemA, "1", "1");
     val container2 = new Container(systemA, "2", "2");
-    systemA.add(container1, container2);
     container1.uses(container2, "TODO");
     val project = new Project();
     project.getSystems().add(systemA);
@@ -25,7 +24,7 @@ public class ContainerViewTest {
     val dot = dotBuilder.generateContainerViewDot(systemA);
     System.out.println(dot);
     dotBuilder.createFile("oneSystemWithTwoContainersTest.png");
-    assertTrue(dot.contains("1 -> 2"));
+    assertTrue(dot.contains("\"1\" -> \"2\""));
   }
 
   @Test
@@ -44,8 +43,8 @@ public class ContainerViewTest {
     project.getSystems().add(systemB);
     val dotBuilder = new DotBuilder(project);
     val dot = dotBuilder.generateContainerViewDot(systemB);
-    assertTrue(dot.contains("3 -> A"));
-    assertTrue(dot.contains("3 -> 4"));
+    assertTrue(dot.contains("\"3\" -> \"A\""));
+    assertTrue(dot.contains("\"3\" -> \"4\""));
     dotBuilder.createFile("twoSystemsWithContainersReferencingEachOther.png");
   }
 

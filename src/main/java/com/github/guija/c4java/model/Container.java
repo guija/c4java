@@ -4,8 +4,8 @@ public class Container extends Component {
 
   public Container(Component parent, String name, String description) {
     super(name, description);
-    this.parent = parent;
     parent.add(this);
+    this.parent = parent;
   }
 
   @Override

@@ -25,7 +25,7 @@ public class SystemViewTest {
     project.add(systemB);
     val dotBuilder = new DotBuilder(project);
     val dot = dotBuilder.generateSystemViewDot();
-    assertTrue(dot.contains("A -> B"));
+    assertTrue(dot.contains("\"A\" -> \"B\""));
   }
 
   @Test
@@ -39,7 +39,7 @@ public class SystemViewTest {
     project.getSystems().add(systemB);
     val dotBuilder = new DotBuilder(project);
     val dot = dotBuilder.generateSystemViewDot();
-    assertTrue(dot.contains("A -> B"));
+    assertTrue(dot.contains("\"A\" -> \"B\""));
   }
 
 }
