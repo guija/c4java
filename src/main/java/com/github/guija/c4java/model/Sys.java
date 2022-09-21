@@ -7,8 +7,8 @@ public class Sys extends Component {
 
   private final boolean external;
 
-  public Sys(String name) {
-    this(name, false);
+  public Sys(String name, String description) {
+    this(name, description, false);
   }
 
   @Override
@@ -16,8 +16,8 @@ public class Sys extends Component {
     return "Software System";
   }
 
-  public Sys(String name, boolean external) {
-    super(name);
+  public Sys(String name, String description, boolean external) {
+    super(name, description);
     this.external = external;
   }
 

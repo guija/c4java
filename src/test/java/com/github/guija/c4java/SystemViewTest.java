@@ -13,13 +13,13 @@ public class SystemViewTest {
 
   @Test
   public void systemUsesSystemTest() {
-    val systemA = new Sys("A");
-    val systemB = new Sys("B");
+    val systemA = new Sys("A", "A");
+    val systemB = new Sys("B", "B");
     systemA.uses(systemB, "TODO");
-    val container1 = new Container("1");
-    val container2 = new Container("2");
-    val container3 = new Container("3");
-    val container4 = new Container("4");
+    val container1 = new Container("1", "1");
+    val container2 = new Container("2", "2");
+    val container3 = new Container("3", "3");
+    val container4 = new Container("4", "4");
     systemA.add(container1);
     systemA.add(container2);
     systemB.add(container3);
@@ -28,22 +28,22 @@ public class SystemViewTest {
     project.add(systemA);
     project.add(systemB);
     val dotBuilder = new DotBuilder(project);
-    val dot = dotBuilder.generateSystemViewDot(project);
+    val dot = dotBuilder.generateSystemViewDot();
     assertTrue(dot.contains("A -> B"));
   }
 
   @Test
   public void containerUsesSystemTest() {
-    val systemA = new Sys("A");
-    val systemB = new Sys("B");
-    val container1 = new Container("1");
+    val systemA = new Sys("A", "A");
+    val systemB = new Sys("B", "B");
+    val container1 = new Container("1", "1");
     systemB.add(container1);
     systemA.uses(container1, "TODO");
     val project = new Project();
     project.getSystems().add(systemA);
     project.getSystems().add(systemB);
     val dotBuilder = new DotBuilder(project);
-    val dot = dotBuilder.generateSystemViewDot(project);
+    val dot = dotBuilder.generateSystemViewDot();
     assertTrue(dot.contains("A -> B"));
   }
 

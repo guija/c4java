@@ -2,8 +2,8 @@ package com.github.guija.c4java.model;
 
 public class Service extends Component {
 
-  public Service(String name) {
-    super(name);
+  public Service(String name, String description) {
+    super(name, description);
   }
 
   @Override

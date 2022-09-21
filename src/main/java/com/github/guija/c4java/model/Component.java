@@ -11,18 +11,16 @@ import java.util.Set;
 
 @Getter
 @ToString(onlyExplicitlyIncluded = true)
+@RequiredArgsConstructor
 public abstract class Component {
 
   @ToString.Include
   private final String name;
+  private final String description;
   private Set<UsesRelation> usesRelations = new HashSet<>();
   private Set<UsesRelation> usedBy = new HashSet<>();
   private Set<Component> components = new HashSet<>();
   private Component parent;
-
-  public Component(String name) {
-    this.name = name;
-  }
 
   public abstract String getTypeDescription();
 

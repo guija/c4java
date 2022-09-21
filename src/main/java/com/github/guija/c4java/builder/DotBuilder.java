@@ -1,6 +1,7 @@
 package com.github.guija.c4java.builder;
 
 import com.github.guija.c4java.model.*;
+import com.github.guija.c4java.util.TextUtil;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,9 @@ import java.util.HashSet;
 
 @RequiredArgsConstructor
 public class DotBuilder {
+
+  private static final String LINE_SEPARATOR = "<BR/>";
+  private static final int MAX_LINE_LENGTH = 30;
 
   private final Project project;
   private HashSet<Component> alreadyRegisteredNodes = new HashSet<>();
@@ -43,7 +47,7 @@ public class DotBuilder {
     appendFooter();
   }
 
-  public String generateSystemViewDot(Project project) {
+  public String generateSystemViewDot() {
     val viewType = Component.Type.SYSTEM;
     for (val system : project.getSystems()) {
       registerNode(system);
@@ -68,7 +72,7 @@ public class DotBuilder {
     return dot;
   }
 
-  public String generateContainerViewDot(Project project, Sys system) {
+  public String generateContainerViewDot(Sys system) {
     for (val container : system.getComponents()) {
       registerNode(container);
       for (val usesRelations : container.getUsesRelations()) {
@@ -91,21 +95,34 @@ public class DotBuilder {
     registerNode(from);
     registerNode(to);
     val edgeStyle = getRelationStyle(isAsync);
-    dot += String.format("\"%s\" -> \"%s\" [xlabel=\"%s\" style=%s fontname=Helvetica fontsize=11 color=\"#707070\"]\n", from.getId(), to.getId(), comment, edgeStyle);
+    val commentFormatted = TextUtil.splitIntoMultipleLinesMaintainingWordBoundaries(comment, MAX_LINE_LENGTH, "\n");
+    dot += String.format("\"%s\" -> \"%s\" [label=\"%s\" style=%s fontname=Helvetica fontsize=11 color=\"#707070\"]\n", from.getId(), to.getId(), commentFormatted, edgeStyle);
   }
 
   private void registerNode(Component component) {
     if (!alreadyRegisteredNodes.contains(component)) {
       alreadyRegisteredNodes.add(component);
       val id = component.getId();
-      val description = "This is a very very very<BR/>very long description";
-      dot += String.format("\"%s\" [label=<<B>%s</B><BR/>[%s]<BR/><BR/>%s> shape=box fontname=Helvetica fontsize=12 margin=\"0.3,0.1\" fillcolor=\"#%s\" color=\"#%s\" fontcolor=white style=filled]\n",
+      val shape = getShape(component);
+      val description = TextUtil.splitIntoMultipleLinesMaintainingWordBoundaries(component.getDescription(), MAX_LINE_LENGTH, LINE_SEPARATOR);
+      dot += String.format("\"%s\" [label=<<B>%s</B><BR/>[%s]<BR/><BR/>%s> shape=%s fontname=Helvetica fontsize=12 margin=\"0.3,0.1\" fillcolor=\"#%s\" color=\"#%s\" fontcolor=white style=filled]\n",
         id,
-        id,
+        component.getName(),
         component.getTypeDescription(),
         description,
+        shape,
         getBackgroundColor(component),
         getBorderColor(component));
+    }
+  }
+
+  private String getShape(Component component) {
+    if (component instanceof Database) {
+      return "cylinder";
+    } else if (component instanceof Queue) {
+      return "cds";
+    } else {
+      return "box";
     }
   }
 

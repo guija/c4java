@@ -14,15 +14,15 @@ public class ContainerViewTest {
 
   @Test
   public void oneSystemWithTwoContainersTest() {
-    val systemA = new Sys("A");
-    val container1 = new Container("1");
-    val container2 = new Container("2");
+    val systemA = new Sys("A", "A");
+    val container1 = new Container("1", "1");
+    val container2 = new Container("2", "2");
     systemA.add(container1, container2);
     container1.uses(container2, "TODO");
     val project = new Project();
     project.getSystems().add(systemA);
     val dotBuilder = new DotBuilder(project);
-    val dot = dotBuilder.generateContainerViewDot(project, systemA);
+    val dot = dotBuilder.generateContainerViewDot(systemA);
     System.out.println(dot);
     dotBuilder.createFile("oneSystemWithTwoContainersTest.png");
     assertTrue(dot.contains("1 -> 2"));
@@ -30,12 +30,12 @@ public class ContainerViewTest {
 
   @Test
   public void twoSystemsWithContainersReferencingEachOther() {
-    val systemA = new Sys("A");
-    val systemB = new Sys("B");
-    val container1 = new Container("1");
-    val container2 = new Container("2");
-    val container3 = new Container("3");
-    val container4 = new Container("4");
+    val systemA = new Sys("A", "A");
+    val systemB = new Sys("B", "B");
+    val container1 = new Container("1", "1");
+    val container2 = new Container("2", "2");
+    val container3 = new Container("3", "3");
+    val container4 = new Container("4", "4");
     systemA.add(container1, container2);
     systemB.add(container3, container4);
     container3.uses(container1, "TODO");
@@ -45,7 +45,7 @@ public class ContainerViewTest {
     project.getSystems().add(systemA);
     project.getSystems().add(systemB);
     val dotBuilder = new DotBuilder(project);
-    val dot = dotBuilder.generateContainerViewDot(project, systemB);
+    val dot = dotBuilder.generateContainerViewDot(systemB);
     assertTrue(dot.contains("3 -> A"));
     assertTrue(dot.contains("3 -> 4"));
     dotBuilder.createFile("twoSystemsWithContainersReferencingEachOther.png");
@@ -53,16 +53,16 @@ public class ContainerViewTest {
 
   @Test
   public void containerUsingExternalSystemTest() {
-    val systemA = new Sys("A");
-    val systemB = new ExternalSystem("B");
-    val container = new Container("Container");
+    val systemA = new Sys("A", "A");
+    val systemB = new ExternalSystem("B", "B");
+    val container = new Container("Container", "Container");
     systemA.add(container);
     container.uses(systemB, "TODO");
     val project = new Project();
     project.getSystems().add(systemA);
     project.getSystems().add(systemB);
     val dotBuilder = new DotBuilder(project);
-    val dot = dotBuilder.generateContainerViewDot(project, systemA);
+    val dot = dotBuilder.generateContainerViewDot(systemA);
     dotBuilder.createFile("twoSystemsWithContainersReferencingEachOther.png");
   }
 
