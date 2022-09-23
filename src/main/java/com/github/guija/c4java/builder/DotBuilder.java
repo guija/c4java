@@ -129,14 +129,16 @@ public class DotBuilder {
       val id = component.getId();
       val shape = getShape(component);
       val description = TextUtil.splitIntoMultipleLinesMaintainingWordBoundaries(component.getDescription(), MAX_LINE_LENGTH, LINE_SEPARATOR);
-      dot += String.format("\"%s\" [label=<<B>%s</B><BR/>[%s]<BR/><BR/>%s> shape=%s fontname=Helvetica fontsize=12 margin=\"0.3,0.1\" fillcolor=\"#%s\" color=\"#%s\" fontcolor=white style=filled]\n",
+      val href = component instanceof Sys && !((Sys)component).isExternal() ? "href=\"system_"+id+".svg\"" : "";
+      dot += String.format("\"%s\" [label=<<B>%s</B><BR/>[%s]<BR/><BR/>%s> shape=%s fontname=Helvetica fontsize=12 margin=\"0.3,0.1\" fillcolor=\"#%s\" color=\"#%s\" fontcolor=white style=filled %s]\n",
         id,
         component.getName(),
         component.getTypeDescription(),
         description,
         shape,
         getBackgroundColor(component),
-        getBorderColor(component));
+        getBorderColor(component),
+        href);
     }
   }
 
