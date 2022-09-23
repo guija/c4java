@@ -36,10 +36,10 @@ public class DotBuilder {
   private void prependHeader() {
     this.dot =
       "digraph {\n"
-        + "graph [pad=\"0.5\", nodesep=\"1\", ranksep=\"2\"];\n"
-        // + "splines=\"false\";\n"
+        + "graph [pad=\"0.5\", nodesep=\"2\", ranksep=\"2\"];\n"
+        + "splines=\"true\";\n"
         // + "mindist=1"
-        // + "splines=ortho;\n"
+        + "splines=ortho;\n"
         + dot;
   }
 

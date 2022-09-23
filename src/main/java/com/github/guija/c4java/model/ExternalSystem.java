@@ -7,8 +7,8 @@ public class ExternalSystem extends Sys {
     return "External Software System";
   }
 
-  public ExternalSystem(String name, String description) {
-    super(name, description, true);
+  public ExternalSystem(Project project, String name, String description) {
+    super(project, name, description, true);
   }
 
 }
