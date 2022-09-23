@@ -2,6 +2,7 @@ package com.github.guija.c4java.builder;
 
 import com.github.guija.c4java.model.*;
 import com.github.guija.c4java.util.TextUtil;
+import guru.nidi.graphviz.engine.Engine;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +26,11 @@ public class DotBuilder {
 
   @SneakyThrows
   public void createFile(String fileName) {
-    val graphviz = Graphviz.fromString(dot);
+    val engine = Engine.DOT;
+    val graphviz = Graphviz.fromString(dot).engine(engine);
+    val renderer = graphviz.render(Format.SVG);
     // graphviz.render(Format.PNG).toFile(new File(fileName));
-    graphviz.render(Format.SVG).toFile(new File(fileName));
+    renderer.toFile(new File(fileName));
   }
 
   private void prependHeader() {
@@ -35,6 +38,7 @@ public class DotBuilder {
       "digraph {\n"
         + "graph [pad=\"0.5\", nodesep=\"1\", ranksep=\"2\"];\n"
         // + "splines=\"false\";\n"
+        // + "mindist=1"
         // + "splines=ortho;\n"
         + dot;
   }
